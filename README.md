@@ -95,3 +95,18 @@ Sorts a folder of images into separate folders based on dominant color. It will 
 ### rotate.py
 
 
+## automated cleaning routine
+
+# >>>>>>>> Selects only images that fit min_size and max_size
+python ./dataset-tools/sort.py --input_folder ./parent_folder/folder --output_folder ./parent_folder/folder_excluded --min_size 480 --max_size 2024 --file_extension jpg
+
+# >>>>>>>> Crops many times, then resize to min_size
+python ./dataset-tools/multicrop.py --input_folder ./parent_folder/folder_excluded --output_folder ./parent_folder/folder_cropped --min_size 320 --max_size 640 --how_many 8 --file_extension jpg
+
+# >>>>>>>> Sorts according to visual similarity to start_img using one among these networks: [alex, vgg, squeeze]
+python ./dataset-tools/sort.py --input_folder ./parent_folder/folder_cropped --output_folder ./parent_folder/folder_sorted --start_img ./parent_folder/start_imgs/cristo.png --process lpips --network alex --max_dist 1.0 --file_extension jpg  --verbose  --use_gpu
+
+# >>>>>>>> Rename
+python ./dataset-tools/sort.py --input_folder ./parent_folder/folder_sorted --output_folder ./parent_folder/folder_selected --process rename  --file_extension jpg  --verbose
+
+

@@ -42,6 +42,10 @@ def parse_args():
 		default=1024,
 		help='Maximum width or height of the output images. (default: %(default)s)')
 
+	parser.add_argument('--min_size', type=int, 
+		default=1024,
+		help='Minimum width or height of the input images. [only works for resize] (default: %(default)s)')
+
 	parser.add_argument('--height', type=int, 
 		default=None,
 		help='Maximum height of the output image (for use with --process_type crop). (default: %(default)s)')
@@ -241,7 +245,7 @@ def processCanny(img):
 	return gray
 
 def makeResize(img,filename,scale):
-	remakePath = args.output_folder + str(scale)+"/"
+	remakePath = args.output_folder +"/"
 	if not os.path.exists(remakePath):
 		os.makedirs(remakePath)
 

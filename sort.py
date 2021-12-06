@@ -26,7 +26,7 @@ def parse_args():
 
 	parser.add_argument('-p','--process_type', type=str,
 		default='exclude',
-		help='Process to use. ["exclude","sort","tagsort","lpips","channels"] (default: %(default)s)')
+		help='Process to use. ["exclude","sort","tagsort","lpips","channels","rename"] (default: %(default)s)')
 
 	parser.add_argument('--max_size', type=int, 
 		default=2048,
@@ -74,7 +74,7 @@ def saveImage(img,path,filename):
         cv2.imwrite(os.path.join(path, new_file), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
 
 def exclude(img,filename):
-	make_path = args.output_folder + "exclude_"+str(args.min_size)+"-"+str(args.max_size)+"/"
+	make_path = args.output_folder + "/"
 	if not os.path.exists(make_path):
 		os.makedirs(make_path)
 
@@ -174,7 +174,7 @@ def main():
 			processImage(img,os.path.splitext(filename)[0])
 	else:
 		print("Not a working input_folder path: " + args.input_folder)
-		return;
+		return
 
 	for root, subdirs, files in os.walk(args.input_folder):
 		if(args.verbose): print('--\nroot = ' + root)
@@ -208,7 +208,25 @@ def main():
 				if(args.verbose): print('%s Distance: %.3f'%(filename,dist01))
 
 				if(dist01 <= args.max_dist):
-					new_path = os.path.join(args.output_folder, filename)
+					# new_filename = str(dist01[0]) + '_' + filename
+					new_filename = '%.3f_%s'%(dist01,filename)
+					new_path = os.path.join(args.output_folder, new_filename)
+					shutil.copy2(file_path,new_path)
+
+			continue
+
+		elif(args.process_type == "rename"):			
+			if not os.path.exists(args.output_folder):
+				os.makedirs(args.output_folder)
+
+			for filename in files:
+				file_path = os.path.join(root, filename)
+				img = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)
+
+				if hasattr(img, 'copy'):
+					new_filename = filename[6:]
+					# print(new_filename)
+					new_path = os.path.join(args.output_folder, new_filename)
 					shutil.copy2(file_path,new_path)
 
 			continue
