@@ -17,18 +17,21 @@ def processImage(img,filename):
     (h, w) = img.shape[:2]
     min_size = args.min_size
 
-    if(args.verbose): print('max_size: {}'.format(str(max_size)))
     if(args.max_size):
         max_size = args.max_size
     else:
         max_size = min(h,w)
 
+    if(max_size > min(h,w)):
+        max_size = min(h,w)
+
     if (min_size > max_size):
-        print('image is too small for set min_size: ' + fn);
+        print('image is too small for set min_size: ' + fn)
         return
 
-    print('min_size: {}'.format(str(min_size)))
-    print('max_size: {}'.format(str(max_size)))
+    if(args.verbose):
+        print('min_size: {}'.format(str(min_size)))
+        print('max_size: {}'.format(str(max_size)))
 
     if (min_size != max_size):
         original = img.copy()
